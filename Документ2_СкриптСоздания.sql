@@ -1,0 +1,54 @@
+CREATE TABLE Users (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    AbsClientId VARCHAR(250) NOT NULL,
+);
+GO
+
+CREATE TABLE Branches (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    City VARCHAR(250) NOT NULL,
+    Address VARCHAR(250) NOT NULL,
+);
+GO
+
+CREATE TABLE CashOrders (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT NOT NULL,
+    BranchId INT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    Amount DECIMAL(18,2) NOT NULL,
+    Fee DECIMAL(18,2) NOT NULL,
+    Currency VARCHAR(3) NOT NULL,
+    PickupFrom DATETIME NULL,
+    PickupTo DATETIME NULL,
+    PickupAt DATETIME NULL,
+    Status VARCHAR(250) NOT NULL,
+    AbsOperationId VARCHAR(250) NULL,
+    ErrorMessage VARCHAR(250) NULL
+);
+GO
+
+CREATE TABLE LogisticsRequests (
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    CashOrderId INT NOT NULL,
+    CreatedAt DATETIME NOT NULL,
+    PlannedDeliveryAt DATETIME NULL,
+    Status VARCHAR(250) NOT NULL,
+    ErrorMessage VARCHAR(500) NULL
+);
+GO
+
+ALTER TABLE CashOrders
+ADD CONSTRAINT FK_CashOrders_Users
+FOREIGN KEY (UserId) REFERENCES Users(Id);
+GO
+
+ALTER TABLE CashOrders
+ADD CONSTRAINT FK_CashOrders_Branches
+FOREIGN KEY (BranchId) REFERENCES Branches(Id);
+GO
+
+ALTER TABLE LogisticsRequests
+ADD CONSTRAINT FK_Logistics_CashOrders
+FOREIGN KEY (CashOrderId) REFERENCES CashOrders(Id);
+GO
